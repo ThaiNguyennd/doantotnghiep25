@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { ValidationPipe } from '@nestjs/common';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -15,6 +16,10 @@ async function bootstrap() {
 
   const PORT = configService.get<string>('PORT');
   app.useGlobalPipes(new ValidationPipe());
+
+  // config cookie
+  app.use(cookieParser());
+
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
   await app.listen(PORT ?? 3000);
 }
