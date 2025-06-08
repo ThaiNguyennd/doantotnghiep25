@@ -17,6 +17,10 @@ async function bootstrap() {
   const PORT = configService.get<string>('PORT');
   app.useGlobalPipes(new ValidationPipe());
 
+  app.enableCors({
+    origin: 'http://localhost:3000',
+  });
+
   // config cookie
   app.use(cookieParser());
 

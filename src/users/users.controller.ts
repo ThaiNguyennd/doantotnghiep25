@@ -27,6 +27,7 @@ export class UsersController {
     return { _id: newUser?._id, createdAt: newUser?.createdAt };
   }
 
+  @Public()
   @ResponseMessage('find all user with paginate')
   @Get()
   findAll(
