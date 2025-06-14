@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
     FaSearch,
-    FaUser,
+    FaUserCircle,
     FaShoppingCart,
     FaSignOutAlt,
-    FaUserCircle,
 } from 'react-icons/fa';
+import axios from 'axios'; // ✅ Thêm dòng này
 import LoginModal from './auth/LoginModal';
 import RegisterModal from './auth/RegisterModal';
 
@@ -16,66 +16,76 @@ const Header: React.FC = () => {
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const navigate = useNavigate();
 
-    // Mock authentication state - replace with actual auth state management
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState({
-        name: 'Nguyễn Văn A',
-        email: 'nguyenvana@example.com',
+    const [user, setUser] = useState<{ name: string; email: string }>({
+        name: '',
+        email: '',
     });
 
-    const handleLogout = () => {
-        // Add actual logout logic here
-        setIsAuthenticated(false);
-        setUser({ name: '', email: '' });
-        navigate('/');
-        setIsUserMenuOpen(false);
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('user');
+
+        if (token && userData) {
+            setIsAuthenticated(true);
+            setUser(JSON.parse(userData));
+        } else {
+            setIsAuthenticated(false);
+        }
+    }, []);
+
+    const handleLogout = async () => {
+        try {
+            const token = localStorage.getItem('token');
+            console.log('📦 Token hiện tại:', token);
+
+            if (token) {
+                await axios.post(
+                    'http://localhost:3001/auth/logout',
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+            }
+
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            setIsAuthenticated(false);
+            setUser({ name: '', email: '' });
+            setIsUserMenuOpen(false);
+            navigate('/');
+        } catch (error) {
+            console.error('Lỗi khi logout:', error);
+        }
     };
 
-    const handleLogin = () => {
-        setIsLoginModalOpen(true);
-    };
-
-    const handleRegister = () => {
-        setIsRegisterModalOpen(true);
-    };
+    const handleLogin = () => setIsLoginModalOpen(true);
+    const handleRegister = () => setIsRegisterModalOpen(true);
 
     const handleSwitchToRegister = () => {
-        // Close login modal and open register modal with a small delay for smooth transition
         setIsLoginModalOpen(false);
-        setTimeout(() => {
-            setIsRegisterModalOpen(true);
-        }, 150);
+        setTimeout(() => setIsRegisterModalOpen(true), 150);
     };
 
     const handleSwitchToLogin = () => {
-        // Close register modal and open login modal with a small delay for smooth transition
         setIsRegisterModalOpen(false);
-        setTimeout(() => {
-            setIsLoginModalOpen(true);
-        }, 150);
-    };
-
-    const handleCloseLoginModal = () => {
-        setIsLoginModalOpen(false);
-    };
-
-    const handleCloseRegisterModal = () => {
-        setIsRegisterModalOpen(false);
+        setTimeout(() => setIsLoginModalOpen(true), 150);
     };
 
     return (
         <>
-            <header className="opacit fixed top-0 left-0 w-full z-40 bg-[#18191A] bg-opacity-75 backdrop-blur-md shadow text-white">
+            <header className="fixed h-auto top-0 left-0 w-full z-40 bg-[#18191A] bg-opacity-75 backdrop-blur-md shadow text-white">
                 <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-20">
-                        {/* Logo */}
                         <Link to="/" className="flex-shrink-0 text-white">
                             <span className="h-12 font-bold text-3xl text-green-600">
                                 WAKA
                             </span>
                         </Link>
 
-                        {/* Navigation Menu */}
                         <nav className="hidden md:flex space-x-8">
                             <Link
                                 to="/ebooks"
@@ -104,7 +114,6 @@ const Header: React.FC = () => {
                             </Link>
                         </nav>
 
-                        {/* Search Bar */}
                         <div className="hidden md:flex items-center flex-1 max-w-md mx-8">
                             <div className="relative w-full">
                                 <input
@@ -116,7 +125,6 @@ const Header: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* User Menu */}
                         <div className="flex items-center space-x-4">
                             <Link
                                 to="/cart"
@@ -191,18 +199,15 @@ const Header: React.FC = () => {
                 </div>
             </header>
 
-            {/* Auth Modals */}
             <LoginModal
                 isOpen={isLoginModalOpen}
-                onClose={handleCloseLoginModal}
+                onClose={() => setIsLoginModalOpen(false)}
                 onSwitchToRegister={handleSwitchToRegister}
-                showBackground={true}
             />
             <RegisterModal
                 isOpen={isRegisterModalOpen}
-                onClose={handleCloseRegisterModal}
+                onClose={() => setIsRegisterModalOpen(false)}
                 onSwitchToLogin={handleSwitchToLogin}
-                showBackground={true}
             />
         </>
     );
