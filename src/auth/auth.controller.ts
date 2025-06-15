@@ -45,7 +45,7 @@ export class AuthController {
   // khi chay den ham nay tuc la access token da het han, jwt k hop le can public ra
   @Public()
   @ResponseMessage('refresh token')
-  @Get('/refresh')
+  @Post('/refresh')
   handleRefreshToken(
     @Req() request: Request,
     @Res({ passthrough: true }) res: Response,
@@ -55,7 +55,7 @@ export class AuthController {
   }
 
   @ResponseMessage('logout')
-  @Get('/logout')
+  @Post('/logout')
   handleLogout(@User() user: IUser, @Res({ passthrough: true }) res: Response) {
     return this.authService.logout(user, res);
   }

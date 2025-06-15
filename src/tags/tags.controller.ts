@@ -11,7 +11,7 @@ import {
 import { TagsService } from './tags.service';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
-import { ResponseMessage, User } from 'src/decorator/customize';
+import { Public, ResponseMessage, User } from 'src/decorator/customize';
 import { IUser } from 'src/users/users.interface';
 
 @Controller('tags')
@@ -24,6 +24,7 @@ export class TagsController {
     return this.tagsService.create(createTagDto, user);
   }
 
+  @Public()
   @ResponseMessage('get all tags')
   @Get()
   findAll(

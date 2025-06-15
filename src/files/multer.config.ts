@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { Injectable } from '@nestjs/common';
 import {
@@ -29,8 +31,13 @@ export class MulterConfigService implements MulterOptionsFactory {
     return {
       storage: diskStorage({
         destination: (req, file, cb) => {
+          const ext = path.extname(file.originalname).toLowerCase();
           const folder = req?.headers?.folder_type ?? 'default';
-          const relativePath = `public/images/${folder}`;
+
+          const isPDF = ext === '.pdf';
+          const folderType = isPDF ? 'pdfs' : 'images';
+
+          const relativePath = `public/${folder}/${folderType}`;
           const fullPath = join(this.getRootPath(), relativePath);
 
           this.ensureExistsSync(fullPath);
@@ -39,7 +46,7 @@ export class MulterConfigService implements MulterOptionsFactory {
         filename: (req, file, cb) => {
           const extName = path.extname(file.originalname);
           const baseName = path.basename(file.originalname, extName);
-          const finalName = `${baseName}-${Date.now()}${extName}`;
+          const finalName = `${baseName}${extName}`;
           cb(null, finalName);
         },
       }),

@@ -13,6 +13,7 @@ import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { TagsModule } from './tags/tags.module';
 import { BooksModule } from './books/books.module';
 import { FilesModule } from './files/files.module';
+import { ChaptersModule } from './chapters/chapters.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { FilesModule } from './files/files.module';
     TagsModule,
     BooksModule,
     FilesModule,
+    ChaptersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
