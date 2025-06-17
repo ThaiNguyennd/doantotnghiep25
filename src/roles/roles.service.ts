@@ -4,8 +4,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { IUser } from 'src/users/users.interface';
 import { InjectModel } from '@nestjs/mongoose';
-import { RolesController } from './roles.controller';
-import { RolesDocument } from './schemas/role.schema';
+import { Roles, RolesDocument } from './schemas/role.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import { IsEmpty } from 'class-validator';
@@ -14,7 +13,7 @@ import mongoose from 'mongoose';
 @Injectable()
 export class RolesService {
   constructor(
-    @InjectModel(RolesController.name)
+    @InjectModel(Roles.name)
     private roleModel: SoftDeleteModel<RolesDocument>,
   ) {}
   async create(createRoleDto: CreateRoleDto, user: IUser) {
