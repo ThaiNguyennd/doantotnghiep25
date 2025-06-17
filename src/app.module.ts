@@ -14,7 +14,6 @@ import { TagsModule } from './tags/tags.module';
 import { BooksModule } from './books/books.module';
 import { FilesModule } from './files/files.module';
 import { ChaptersModule } from './chapters/chapters.module';
-import { RoleModule } from './role/role.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 
@@ -38,7 +37,6 @@ import { PermissionsModule } from './permissions/permissions.module';
     BooksModule,
     FilesModule,
     ChaptersModule,
-    RoleModule,
     RolesModule,
     PermissionsModule,
   ],

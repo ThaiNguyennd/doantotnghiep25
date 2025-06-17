@@ -97,10 +97,13 @@ export class RolesService {
   }
 
   async remove(id: string, user: IUser) {
-    return await this.roleModel.updateOne(
+    const foundRole = await this.roleModel.findById(id);
+    if (foundRole?.name === 'admin')
+      throw new BadRequestException('kh dc xoa admin');
+    await this.roleModel.updateOne(
       { _id: id },
       { deletedBy: { _id: user._id, email: user.email } },
     );
-    return this.roleModel.softDelete({ _id: id });
+    return await this.roleModel.softDelete({ _id: id });
   }
 }

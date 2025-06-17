@@ -14,11 +14,13 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from './users.interface';
 import { IsEmpty } from 'class-validator';
 import aqp from 'api-query-params';
+import { Roles, RolesDocument } from 'src/roles/schemas/role.schema';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(UserM.name) private userModel: SoftDeleteModel<UserDocument>,
+    @InjectModel(Roles.name) private roleModel: SoftDeleteModel<RolesDocument>,
   ) {}
   getHashPassword = (password: string) => {
     const salt = genSaltSync(10);
@@ -48,12 +50,13 @@ export class UsersService {
     const { name, email, password } = user;
     const isExist = await this.userModel.findOne({ email });
     if (isExist) throw new BadRequestException(`email ${email} da ton tai`);
+    const userRole = await this.roleModel.findOne({ name: 'Member' });
     const hashPassword = this.getHashPassword(password);
     let newRegister = await this.userModel.create({
       name,
       email,
       password: hashPassword,
-      role: 'Member',
+      role: userRole?._id,
       isPremium: false,
     });
     return newRegister;
@@ -99,7 +102,9 @@ export class UsersService {
   }
 
   findOneByUsername(username: string) {
-    return this.userModel.findOne({ email: username });
+    return this.userModel
+      .findOne({ email: username })
+      .populate({ path: 'role', select: { name: 1 } });
   }
 
   isValidPassword(password: string, hash: string) {
@@ -126,6 +131,8 @@ export class UsersService {
   };
 
   findUserByToken = async (refreshToken: string) => {
-    return await this.userModel.findOne({ refreshToken });
+    return await this.userModel
+      .findOne({ refreshToken })
+      .populate({ path: 'role', select: { name: 1 } });
   };
 }
