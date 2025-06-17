@@ -78,4 +78,10 @@ export class BooksService {
     );
     return this.bookModel.softDelete({ _id: id });
   }
+
+  async findByTags(id: string) {
+    return await this.bookModel
+      .find({ 'tags._id': id })
+      .sort({ createdAt: -1 });
+  }
 }

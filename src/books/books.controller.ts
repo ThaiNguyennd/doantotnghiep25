@@ -58,4 +58,11 @@ export class BooksController {
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.booksService.remove(id, user);
   }
+
+  @Public()
+  @ResponseMessage('find by tags')
+  @Get('by-tags/:tagId')
+  findByBook(@Param('tagId') tagId: string) {
+    return this.booksService.findByTags(tagId);
+  }
 }
