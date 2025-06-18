@@ -16,6 +16,7 @@ import { FilesModule } from './files/files.module';
 import { ChaptersModule } from './chapters/chapters.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { PermissionsModule } from './permissions/permissions.module';
     ChaptersModule,
     RolesModule,
     PermissionsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
