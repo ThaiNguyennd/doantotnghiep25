@@ -1,31 +1,30 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
-/* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable prefer-const */
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateBookDto } from './dto/create-book.dto';
-import { UpdateBookDto } from './dto/update-book.dto';
-import { Book, BookDocument } from './schemas/book.schema';
-import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from '@nestjs/common';
+import { CreateRatingDto } from './dto/create-rating.dto';
+import { UpdateRatingDto } from './dto/update-rating.dto';
 import { IUser } from 'src/users/users.interface';
+import { InjectModel } from '@nestjs/mongoose';
+import { Rating, RatingDocument } from './schemas/rating.schema';
+import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import { IsEmpty } from 'class-validator';
 
 @Injectable()
-export class BooksService {
+export class RatingsService {
   constructor(
-    @InjectModel(Book.name) private bookModel: SoftDeleteModel<BookDocument>,
+    @InjectModel(Rating.name)
+    private ratingModel: SoftDeleteModel<RatingDocument>,
   ) {}
-  async create(createBookDto: CreateBookDto, user: IUser) {
-    return await this.bookModel.create({
-      ...createBookDto,
+
+  async create(createRatingDto: CreateRatingDto, user: IUser) {
+    return await this.ratingModel.create({
+      ...createRatingDto,
       createdBy: { _id: user._id, email: user.email },
     });
   }
 
   async findAll(currentPage: number, limit: number, qs: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { filter, projection, population } = aqp(qs);
     let { sort } = aqp(qs);
     delete filter.page;
@@ -34,15 +33,16 @@ export class BooksService {
     let offset = (+currentPage - 1) * +limit; // tính tổng số trang
     let defaultLimit = +limit ? +limit : 10; // mặc định số bản ghi 1 trang nếu kh truyền vào
 
-    const totalItems = (await this.bookModel.find(filter)).length;
+    const totalItems = (await this.ratingModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
 
     if (IsEmpty(sort)) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore: Unreachable code error
       sort = '-updatedAt';
     }
 
-    const result = await this.bookModel
+    const result = await this.ratingModel
       .find(filter)
       .skip(offset)
       .limit(defaultLimit)
@@ -61,28 +61,18 @@ export class BooksService {
     };
   }
 
-  async findOne(id: string) {
-    return await this.bookModel.findById(id);
-  }
-
-  async update(id: string, updateBookDto: UpdateBookDto, user: IUser) {
-    return await this.bookModel.updateOne(
+  update(id: string, updateRatingDto: UpdateRatingDto, user: IUser) {
+    return this.ratingModel.updateOne(
       { _id: id },
-      { ...updateBookDto, updatedBy: { _id: user._id, email: user.email } },
+      { ...updateRatingDto, updatedBy: { _id: user._id, email: user.email } },
     );
   }
 
   async remove(id: string, user: IUser) {
-    await this.bookModel.updateOne(
+    await this.ratingModel.updateOne(
       { _id: id },
       { deletedBy: { _id: user._id, email: user.email } },
     );
-    return this.bookModel.softDelete({ _id: id });
-  }
-
-  async findByTags(id: string) {
-    return await this.bookModel
-      .find({ 'tags._id': id })
-      .sort({ createdAt: -1 });
+    return this.ratingModel.softDelete({ _id: id });
   }
 }

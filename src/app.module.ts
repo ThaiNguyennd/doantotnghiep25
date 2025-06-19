@@ -17,6 +17,7 @@ import { ChaptersModule } from './chapters/chapters.module';
 import { RolesModule } from './roles/roles.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { CommentsModule } from './comments/comments.module';
+import { RatingsModule } from './ratings/ratings.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CommentsModule } from './comments/comments.module';
     RolesModule,
     PermissionsModule,
     CommentsModule,
+    RatingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

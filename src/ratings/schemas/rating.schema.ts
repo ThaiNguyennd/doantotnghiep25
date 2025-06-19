@@ -1,39 +1,24 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-export type BookDocument = HydratedDocument<Book>;
+export type RatingDocument = HydratedDocument<Rating>;
 
 @Schema({ timestamps: true })
-export class Book {
-  @Prop()
-  title: string;
-
-  @Prop()
-  author: string;
-
-  @Prop()
-  cover: string;
-
-  @Prop()
-  description: string;
-
-  @Prop()
-  rating: string;
-
+export class Rating {
   @Prop({ type: Object })
-  tags: {
+  book: {
     _id: mongoose.Schema.Types.ObjectId;
     name: string;
   };
 
   @Prop()
-  isPremium: boolean;
+  score: number;
 
-  @Prop()
-  createdAt: Date;
-
-  @Prop()
-  updatedAt: Date;
+  @Prop({ type: Object })
+  createdAt: {
+    _id: mongoose.Schema.Types.ObjectId;
+    email: string;
+  };
 
   @Prop({ type: Object })
   createdBy: {
@@ -52,4 +37,4 @@ export class Book {
   };
 }
 
-export const BookSchema = SchemaFactory.createForClass(Book);
+export const RatingSchema = SchemaFactory.createForClass(Rating);
