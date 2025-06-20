@@ -17,6 +17,7 @@ import { Comment, CommentDocument } from './schemas/comment.schema';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { IUser } from 'src/users/users.interface';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
+import { UpdateCommentDto } from './dto/update-comment.dto';
 
 @Injectable()
 export class CommentsService {
@@ -59,6 +60,13 @@ export class CommentsService {
     }
 
     return roots;
+  }
+
+  async update(id: string, updateCommentDto: UpdateCommentDto, user: IUser) {
+    return await this.commentModel.updateOne(
+      { _id: id },
+      { ...updateCommentDto, updatedBy: { _id: user._id, email: user.email } },
+    );
   }
 
   async remove(id: string, user: IUser) {

@@ -1,10 +1,13 @@
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
+  IsInt,
   IsNotEmpty,
   IsNotEmptyObject,
   IsObject,
   IsString,
+  Max,
+  Min,
   ValidateNested,
 } from 'class-validator';
 import mongoose from 'mongoose';
@@ -33,6 +36,11 @@ export class CreateBookDto {
 
   @IsString({ message: 'phai co dinh dang string' })
   description: string;
+
+  @IsInt({ message: 'phai co dinh dang string' })
+  @Min(1)
+  @Max(5)
+  averageRating: string;
 
   @IsNotEmptyObject()
   @IsObject()

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-base-to-string */
 /* eslint-disable prefer-const */
 import { Injectable } from '@nestjs/common';
 import { CreateRatingDto } from './dto/create-rating.dto';
@@ -8,19 +9,28 @@ import { Rating, RatingDocument } from './schemas/rating.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import aqp from 'api-query-params';
 import { IsEmpty } from 'class-validator';
+import { Book } from 'src/books/schemas/book.schema';
+import { BooksService } from 'src/books/books.service';
 
 @Injectable()
 export class RatingsService {
   constructor(
     @InjectModel(Rating.name)
     private ratingModel: SoftDeleteModel<RatingDocument>,
+    @InjectModel(Book.name) private booksService: BooksService,
   ) {}
 
   async create(createRatingDto: CreateRatingDto, user: IUser) {
-    return await this.ratingModel.create({
+    const rating = await this.ratingModel.create({
       ...createRatingDto,
       createdBy: { _id: user._id, email: user.email },
     });
+
+    await this.booksService.updateAverageRating(
+      createRatingDto.book._id.toString(),
+    );
+
+    return rating;
   }
 
   async findAll(currentPage: number, limit: number, qs: string) {

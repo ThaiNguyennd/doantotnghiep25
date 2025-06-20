@@ -12,17 +12,32 @@ import { InjectModel } from '@nestjs/mongoose';
 import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
 import { IsEmpty } from 'class-validator';
+import { Rating, RatingDocument } from 'src/ratings/schemas/rating.schema';
 
 @Injectable()
 export class BooksService {
   constructor(
     @InjectModel(Book.name) private bookModel: SoftDeleteModel<BookDocument>,
+    @InjectModel(Rating.name)
+    private ratingModel: SoftDeleteModel<RatingDocument>,
   ) {}
   async create(createBookDto: CreateBookDto, user: IUser) {
     return await this.bookModel.create({
       ...createBookDto,
       createdBy: { _id: user._id, email: user.email },
     });
+  }
+  async updateAverageRating(id: string) {
+    const ratings = await this.ratingModel.find({
+      'book._id': id,
+      isDeleted: false,
+    });
+
+    if (ratings.length >= 5) {
+      const total = ratings.reduce((sum, r) => sum + r.score, 0);
+      const avg = parseFloat((total / ratings.length).toFixed(1));
+      await this.bookModel.updateOne({ _id: id }, { averageRating: avg });
+    }
   }
 
   async findAll(currentPage: number, limit: number, qs: string) {
