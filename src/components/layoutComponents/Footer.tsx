@@ -46,7 +46,7 @@ const Footer: React.FC = () => {
           </div>
 
           {/* Categories */}
-          <div>
+          {/* <div>
             <h3 className="text-xl font-bold mb-4">Danh Mục</h3>
             <ul className="space-y-2">
               <li>
@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
                 <Link to="/summaries" className="text-gray-400 hover:text-white">Sách tóm tắt</Link>
               </li>
             </ul>
-          </div>
+          </div> */}
 
           {/* Contact Info */}
           <div>

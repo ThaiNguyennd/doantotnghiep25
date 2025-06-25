@@ -33,13 +33,13 @@ const Categories: React.FC = () => {
       icon: <FaGift className="w-12 h-12 text-red-600" />,
       link: "/free-books"
     },
-    {
-      id: 4,
-      title: "Sách tóm tắt",
-      description: "Tóm tắt sách hay mỗi tuần",
-      icon: <FaBookmark className="w-12 h-12 text-yellow-600" />,
-      link: "/summaries"
-    },
+    // {
+    //   id: 4,
+    //   title: "Sách tóm tắt",
+    //   description: "Tóm tắt sách hay mỗi tuần",
+    //   icon: <FaBookmark className="w-12 h-12 text-yellow-600" />,
+    //   link: "/summaries"
+    // },
     {
       id: 5,
       title: "Podcast",

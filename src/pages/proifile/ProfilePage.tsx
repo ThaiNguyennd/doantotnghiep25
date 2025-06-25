@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { FaBook, FaUsers, FaDownload, FaStar } from "react-icons/fa";
-import ChangeAvt from "../proifile/ChangeAvt";
-import ChangeUser from "../proifile/ChangeUser";
 import { useUser } from "../../hooks/UserContext";
+import ChangeAvt from "./ChangeAvt";
+import ChangeUser from "./ChangeUser";
 import Swal from "sweetalert2";
 
-const DashboardPage: React.FC = () => {
+const AudiobooksPage: React.FC = () => {
   const [ChangeAvtModal, setChangeAvtModal] = useState(false);
   const [changeUserModal, setChangeUserModal] = useState(false);
   const { user, loading } = useUser();
@@ -69,6 +68,7 @@ const DashboardPage: React.FC = () => {
       }
     });
   };
+  console.log("userpfl", user);
   return (
     <div className="max-w-4xl my-20 mt-40 mx-auto p-6 bg-white rounded-lg shadow-md w-full">
       <h2 className="text-2xl font-semibold mb-1">Thông Tin Cá Nhân</h2>
@@ -148,6 +148,7 @@ const DashboardPage: React.FC = () => {
               setChangeUserModal(true);
               console.log("ấđâsd");
             }}
+            type="submit"
             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 w-full sm:w-auto"
           >
             Sửa
@@ -170,4 +171,4 @@ const DashboardPage: React.FC = () => {
   );
 };
 
-export default DashboardPage;
+export default AudiobooksPage;

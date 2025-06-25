@@ -62,6 +62,7 @@ const UsersPage: React.FC = () => {
 
             if (res.ok) {
                 setUsers((prev) => prev.filter((u) => u._id !== id));
+                !window.confirm('xóa thành công')
             } else {
                 const data = await res.json();
                 alert(`Xóa thất bại: ${data.message || 'Lỗi không xác định'}`);
