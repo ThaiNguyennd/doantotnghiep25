@@ -27,7 +27,14 @@ const EditBooksComponents: React.FC<any> = ({
   useEffect(() => {
     setEditBook(book);
     setFileReivew(
-      `http://localhost:3001/public/img/books/${book.title}/images/${book.cover}`
+      `http://localhost:3001/public/img/books/${book.title
+        .normalize("NFD") // Bỏ dấu
+        .replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "") // Bỏ ký tự đặc biệt
+        .replace(/\s+/g, "-") // Thay khoảng trắng bằng "-"
+        .replace(/-+/g, "-")}/images/${book.cover}`
     );
   }, [showEditModal]);
   const handleFile = async (e: any) => {
@@ -47,6 +54,19 @@ const EditBooksComponents: React.FC<any> = ({
       await axios.patch(`http://localhost:3001/books/${book._id}`, editBook, {
         headers: {
           Authorization: `Bearer ${token}`,
+        },
+      });
+      const n = editBook.title
+        .normalize("NFD") // Bỏ dấu
+        .replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9\s-]/g, "") // Bỏ ký tự đặc biệt
+        .replace(/\s+/g, "-") // Thay khoảng trắng bằng "-"
+        .replace(/-+/g, "-");
+      await axios.post(`http://localhost:3001/files/upload`, file, {
+        headers: {
+          folder_type: `img/books/${n}`,
         },
       });
       setShowEditModal(false);

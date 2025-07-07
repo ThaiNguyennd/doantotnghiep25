@@ -36,7 +36,7 @@ export const UserProvider = ({ children }: Props) => {
   const [loading, setLoading] = useState<boolean>(true);
   const token = localStorage.getItem("token");
   const idUser = localStorage.getItem("idUser");
-  console.log("user khi mới login", user);
+  console.log("user khi mới login", idUser);
   useEffect(() => {
     const fetchUser = async () => {
       try {

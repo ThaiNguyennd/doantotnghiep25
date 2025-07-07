@@ -56,11 +56,18 @@ const BookDetailPage: React.FC = () => {
           <div className="md:col-span-1">
             <div className="sticky top-4">
               <div className="w-full h-[400px] bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
-                  <img
-                    src={`http://localhost:3001/public/img/books/${book.title}/images/${book.cover}`}
-                    alt="cover"
-                    className="w-full h-full object-cover mx-auto rounded shadow"
-                  />
+                <img
+                  src={`http://localhost:3001/public/img/books/${book.title
+                    .normalize("NFD") // Bỏ dấu
+                    .replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9\s-]/g, "") // Bỏ ký tự đặc biệt
+                    .replace(/\s+/g, "-") // Thay khoảng trắng bằng "-"
+                    .replace(/-+/g, "-")}/images/${book.cover}`}
+                  alt="cover"
+                  className="w-full h-full object-cover mx-auto rounded shadow"
+                />
               </div>
               <div className="mt-4 space-y-4">
                 <div className="flex items-center justify-between">

@@ -31,7 +31,7 @@ const AddBooksComponents: React.FC<any> = ({
     const imageUrl = URL.createObjectURL(fileReSiZe);
     setFileReivew(imageUrl);
 
-    console.log("formData124324123",formData);
+    console.log("formData124324123", formData);
   };
   const handleCreateBook = async () => {
     if (
@@ -69,11 +69,18 @@ const AddBooksComponents: React.FC<any> = ({
           }
         );
 
-        // await axios.post(`http://localhost:3001/files/upload`, file, {
-        //   headers: {
-        //     folder_type: `img/books/${newBook.title}`,
-        //   },
-        // });
+        await axios.post(`http://localhost:3001/files/upload`, file, {
+          headers: {
+            folder_type: `img/books/bookId${newBook.title
+              .normalize("NFD") // Bỏ dấu
+              .replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
+              .toLowerCase()
+              .trim()
+              .replace(/[^a-z0-9\s-]/g, "") // Bỏ ký tự đặc biệt
+              .replace(/\s+/g, "-") // Thay khoảng trắng bằng "-"
+              .replace(/-+/g, "-")}`,
+          },
+        });
 
         setShowAddModal(false);
         setNewBook({

@@ -31,7 +31,7 @@ const CategoriesToBooksComponent: React.FC<any> = ({ idTag }) => {
           `${process.env.REACT_APP_API_URL}/books/by-tags/${idTag}`
         );
         const data = await res.json();
-        console.log("firs,dat", data.data);
+        console.log("firs,datag", data.data);
         const booksFromAPI = data.data;
 
         const formattedBooks: Book[] = booksFromAPI
@@ -80,9 +80,14 @@ const CategoriesToBooksComponent: React.FC<any> = ({ idTag }) => {
               <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
                 <div className="relative pb-[140%]">
                   <img
-                    src={`http://localhost:3001/public/img/books/${
-                      book.title
-                    }/images/${removePrefix(
+                    src={`http://localhost:3001/public/img/books/${book.title
+                      .normalize("NFD") // Bỏ dấu
+                      .replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
+                      .toLowerCase()
+                      .trim()
+                      .replace(/[^a-z0-9\s-]/g, "") // Bỏ ký tự đặc biệt
+                      .replace(/\s+/g, "-") // Thay khoảng trắng bằng "-"
+                      .replace(/-+/g, "-")}/images/${removePrefix(
                       book.cover,
                       "http://localhost:3001"
                     )}`}

@@ -48,9 +48,14 @@ const FeaturedBooks: React.FC<any> = ({ books }) => {
                 <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
                   <div className="relative pb-[140%]">
                     <img
-                      src={`http://localhost:3001/public/img/books/${
-                        book.title
-                      }/images/${removePrefix(
+                      src={`http://localhost:3001/public/img/books/${book.title
+                        .normalize("NFD") // Bỏ dấu
+                        .replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
+                        .toLowerCase()
+                        .trim()
+                        .replace(/[^a-z0-9\s-]/g, "") // Bỏ ký tự đặc biệt
+                        .replace(/\s+/g, "-") // Thay khoảng trắng bằng "-"
+                        .replace(/-+/g, "-")}/images/${removePrefix(
                         book.cover,
                         "http://localhost:3001"
                       )}`}

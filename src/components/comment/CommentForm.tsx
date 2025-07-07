@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React from "react";
 
 export default function CommentForm({ onSubmit }: { onSubmit: (content: string) => void }) {
   const [value, setValue] = useState("");

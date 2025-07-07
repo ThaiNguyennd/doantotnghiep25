@@ -168,7 +168,14 @@ const BooksPage: React.FC = () => {
               <tr key={book._id} className="border-t">
                 <td className="px-4 py-2 text-center">
                   <img
-                    src={`http://localhost:3001/public/img/books/${book.title}/images/${book.cover}`}
+                    src={`http://localhost:3001/public/img/books/${book.title
+                      .normalize("NFD") // Bỏ dấu
+                      .replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
+                      .toLowerCase()
+                      .trim()
+                      .replace(/[^a-z0-9\s-]/g, "") // Bỏ ký tự đặc biệt
+                      .replace(/\s+/g, "-") // Thay khoảng trắng bằng "-"
+                      .replace(/-+/g, "-")}/images/${book.cover}`}
                     alt="cover"
                     className="w-10 h-14 object-cover mx-auto rounded shadow"
                   />

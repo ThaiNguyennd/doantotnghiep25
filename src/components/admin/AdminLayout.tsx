@@ -22,7 +22,7 @@ const AdminLayout: React.FC = () => {
       icon: <FaUsers />,
       label: "Quản lý người dùng",
     },
-    { path: "/admin/tags", icon: <FaTags />, label: "Thể loại" },
+    { path: "/admin/tags", icon: <FaTags />, label: "Quản lý thể loại" },
     // { path: '/admin/settings', icon: <FaCog />, label: 'Cài đặt' },
   ];
 
