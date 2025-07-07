@@ -12,5 +12,6 @@ import { BooksModule } from 'src/books/books.module';
     MongooseModule.forFeature([{ name: Rating.name, schema: RatingSchema }]),
     BooksModule,
   ],
+  exports: [RatingsService]
 })
 export class RatingsModule {}

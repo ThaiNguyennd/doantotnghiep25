@@ -16,6 +16,8 @@ export class User {
 
   @Prop()
   role: string;
+  @Prop()
+  avatar: string;
 
   @Prop()
   isPremium: boolean;

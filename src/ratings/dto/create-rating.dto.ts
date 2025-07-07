@@ -28,9 +28,9 @@ export class CreateRatingDto {
   @Type(() => BookDto)
   book: BookDto;
 
-  @IsInt({ message: 'phai co dinh dang string' })
-  @Min(1, { message: 'score tối thiểu 1' })
-  @Max(5, { message: 'score tối đa 1' })
-  @IsNotEmpty({ message: 'kh dc de trong' })
-  score: string;
+  // @IsInt({ message: 'phai co dinh dang int' })
+  // @Min(1, { message: 'score tối thiểu 1' })
+  // @Max(5, { message: 'score tối đa 1' })
+  // @IsNotEmpty({ message: 'kh dc de trong' })
+  score: number;
 }

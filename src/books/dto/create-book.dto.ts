@@ -37,9 +37,7 @@ export class CreateBookDto {
   @IsString({ message: 'phai co dinh dang string' })
   description: string;
 
-  @IsInt({ message: 'phai co dinh dang string' })
-  @Min(1)
-  @Max(5)
+  
   averageRating: string;
 
   @IsNotEmptyObject()

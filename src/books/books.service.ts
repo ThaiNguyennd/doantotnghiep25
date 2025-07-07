@@ -13,6 +13,7 @@ import { IUser } from 'src/users/users.interface';
 import aqp from 'api-query-params';
 import { IsEmpty } from 'class-validator';
 import { Rating, RatingDocument } from 'src/ratings/schemas/rating.schema';
+import { Chapter, ChapterDocument } from 'src/chapters/schemas/chapter.schema';
 
 @Injectable()
 export class BooksService {
@@ -20,6 +21,8 @@ export class BooksService {
     @InjectModel(Book.name) private bookModel: SoftDeleteModel<BookDocument>,
     @InjectModel(Rating.name)
     private ratingModel: SoftDeleteModel<RatingDocument>,
+    @InjectModel(Chapter.name)
+        private chapterModel: SoftDeleteModel<ChapterDocument>,
   ) {}
   async create(createBookDto: CreateBookDto, user: IUser) {
     return await this.bookModel.create({
@@ -92,6 +95,14 @@ export class BooksService {
       { _id: id },
       { deletedBy: { _id: user._id, email: user.email } },
     );
+     // Cập nhật deletedBy cho tất cả chapter liên quan
+  await this.chapterModel.updateMany(
+    { 'book._id': id },
+    {
+      deletedBy: { _id: user._id, email: user.email },
+    },
+  );
+  await this.chapterModel.softDelete({ 'book._id': id });
     return this.bookModel.softDelete({ _id: id });
   }
 

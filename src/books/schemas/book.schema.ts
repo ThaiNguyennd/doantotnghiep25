@@ -17,7 +17,7 @@ export class Book {
   @Prop()
   description: string;
 
-  @Prop({ type: Number, default: null })
+  @Prop({ type: Number, default: 5 })
   averageRating: number;
 
   @Prop({ type: Object })

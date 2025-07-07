@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
 /* eslint-disable prefer-const */
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateRatingDto } from './dto/create-rating.dto';
 import { UpdateRatingDto } from './dto/update-rating.dto';
 import { IUser } from 'src/users/users.interface';
@@ -17,10 +17,17 @@ export class RatingsService {
   constructor(
     @InjectModel(Rating.name)
     private ratingModel: SoftDeleteModel<RatingDocument>,
-    @InjectModel(Book.name) private booksService: BooksService,
+    private booksService: BooksService,
   ) {}
 
   async create(createRatingDto: CreateRatingDto, user: IUser) {
+    const existingRating = await this.ratingModel.findOne({
+      'book._id': createRatingDto.book._id,
+      'createdBy._id': user._id,
+      isDeleted: false,
+    });
+    if(existingRating) throw new BadRequestException('bạn đã đánh giá sách này rồi')
+
     const rating = await this.ratingModel.create({
       ...createRatingDto,
       createdBy: { _id: user._id, email: user.email },
@@ -71,8 +78,8 @@ export class RatingsService {
     };
   }
 
-  update(id: string, updateRatingDto: UpdateRatingDto, user: IUser) {
-    return this.ratingModel.updateOne(
+  async update(id: string, updateRatingDto: UpdateRatingDto, user: IUser) {
+    return await this.ratingModel.updateOne(
       { _id: id },
       { ...updateRatingDto, updatedBy: { _id: user._id, email: user.email } },
     );

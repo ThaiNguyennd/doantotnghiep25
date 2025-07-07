@@ -31,6 +31,6 @@ async function bootstrap() {
   app.use(cookieParser());
 
   const PORT = configService.get<string>('PORT');
-  await app.listen(PORT ?? 3000);
+  await app.listen(PORT ?? 3000, '0.0.0.0');
 }
 bootstrap();

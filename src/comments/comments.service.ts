@@ -74,9 +74,9 @@ export class CommentsService {
 
     if (!comment) throw new BadRequestException('kh tìm thấy cmt');
 
-    if (comment.user.toString() !== user._id.toString()) {
-      throw new ForbiddenException('Không có quyền xoá comment này');
-    }
+    // if (comment.user.toString() !== user._id.toString()) {
+    //   throw new ForbiddenException('Không có quyền xoá comment này');
+    // }
 
     if (!comment.parent) {
       const idsToDelete = [comment._id];
