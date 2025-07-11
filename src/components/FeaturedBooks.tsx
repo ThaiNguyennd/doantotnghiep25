@@ -60,7 +60,7 @@ const FeaturedBooks: React.FC<any> = ({ books }) => {
                         "http://localhost:3001"
                       )}`}
                       alt={book.title}
-                      className="absolute inset-0 w-full h-full object-cover"
+                      className="absolute inset-0 w-full h-full object-cover "
                     />
                   </div>
                   <div className="p-4">

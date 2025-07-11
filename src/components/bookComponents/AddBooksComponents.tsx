@@ -71,7 +71,7 @@ const AddBooksComponents: React.FC<any> = ({
 
         await axios.post(`http://localhost:3001/files/upload`, file, {
           headers: {
-            folder_type: `img/books/bookId${newBook.title
+            folder_type: `img/books/${newBook.title
               .normalize("NFD") // Bỏ dấu
               .replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
               .toLowerCase()

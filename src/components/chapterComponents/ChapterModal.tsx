@@ -34,8 +34,8 @@ const ChapterModal: React.FC<ChapterModalProps> = ({
                         chapters.map((chapter) => (
                             <li
                                 key={chapter._id}
-                                className="flex justify-between items-center py-2">
-                                <span>{chapter.title}</span>
+                                className="flex justify-between items-center py-2 ">
+                                <span className='w-[90%]'>{chapter.title}</span>
                                 <div className="space-x-2">
                                     <button
                                         onClick={() => onEdit(chapter._id)}
