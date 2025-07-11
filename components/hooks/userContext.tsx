@@ -24,6 +24,7 @@ interface UserContextType {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
   loading: boolean;
+  setLoading: any;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
@@ -41,7 +42,6 @@ export const UserProvider = ({ children }: Props) => {
     const getitem = async () => {
       const idUser = await AsyncStorage.getItem("idUser");
       setIdUser(idUser);
-      console.log("ádsad", idUser);
     };
     getitem();
   }, [idUser]);
@@ -49,13 +49,13 @@ export const UserProvider = ({ children }: Props) => {
     const fetchUser = async () => {
       try {
         const res = await axios.get<any>(
-          `http://192.168.0.101:3001/users/${idUser}`
+          `http://10.0.2.2:3001/users/${idUser}`
         );
-        console.log("res", res.data.data);
+        console.log("res333", res.data.data);
         const result = res.data.data;
         console.log("user context", result.result);
 
-        setUser(result);
+        setUser(res.data.data);
       } catch (error) {
         console.error("Lỗi khi tải thông tin user:", error);
         setUser(null);
@@ -64,9 +64,9 @@ export const UserProvider = ({ children }: Props) => {
       }
     };
     fetchUser();
-  }, [idUser]);
+  }, [loading]);
   return (
-    <UserContext.Provider value={{ user, setUser, loading }}>
+    <UserContext.Provider value={{ user, setUser, loading, setLoading }}>
       {children}
     </UserContext.Provider>
   );

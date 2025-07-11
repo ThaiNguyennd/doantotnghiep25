@@ -1,36 +1,43 @@
 // ThemeContext.tsx
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { useColorScheme, View } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { useColorScheme, View } from "react-native";
 
-type ThemeMode = 'light' | 'dark';
+type Theme = "light" | "dark";
+type ThemeContextType = {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+};
 
-interface ThemeContextProps {
-  themeMode: ThemeMode;
-  toggleTheme: () => void;
-}
+const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const systemTheme = useColorScheme(); // hệ thống
+  const [theme, setThemeState] = useState<Theme>(systemTheme ?? "light");
 
-export const ThemeProvider = ({ children }: { children: ReactNode }) => {
-  const systemColorScheme = useColorScheme();
-  const [themeMode, setThemeMode] = useState<ThemeMode>('light');
-
-  useEffect(() => {
-    if (systemColorScheme === 'dark') {
-      setThemeMode('dark');
-    } else {
-      setThemeMode('light');
-    }
-  }, [systemColorScheme]);
-
-  const toggleTheme = () => {
-    setThemeMode(prev => (prev === 'dark' ? 'light' : 'dark'));
+  const setTheme = async (newTheme: Theme) => {
+    setThemeState(newTheme);
+    await AsyncStorage.setItem("appTheme", newTheme);
   };
 
+  const loadTheme = async () => {
+    const saved = await AsyncStorage.getItem("appTheme");
+    if (saved === "light" || saved === "dark") {
+      setThemeState(saved);
+    } else {
+      setThemeState(systemTheme ?? "light");
+    }
+  };
+
+  useEffect(() => {
+    loadTheme();
+  }, []);
+
   return (
-    <ThemeContext.Provider value={{ themeMode, toggleTheme }}>
-      {/* ✅ Bọc toàn app bằng View có className */}
-      <View className={themeMode === 'dark' ? 'dark flex-1' : 'flex-1'}>
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <View
+        className={`flex-1 w-full ${theme === "dark" ? "bg-primary" : "bg-white"} h-full`}
+      >
         {children}
       </View>
     </ThemeContext.Provider>
@@ -38,7 +45,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
 };
 
 export const useTheme = () => {
-  const context = useContext(ThemeContext);
-  if (!context) throw new Error('useTheme must be used within ThemeProvider');
-  return context;
+  const ctx = useContext(ThemeContext);
+  if (!ctx) throw new Error("useTheme must be used within ThemeProvider");
+  return ctx;
 };

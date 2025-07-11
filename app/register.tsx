@@ -1,4 +1,5 @@
 import ButtonComponent from "@/components/button/ButtonComponent";
+import { useTheme } from "@/components/hooks/ThemeContext";
 import InputComponent from "@/components/input/inputComponent";
 import InputPasswordComponent from "@/components/input/InputPasswordComponent";
 import axios from "axios";
@@ -11,43 +12,51 @@ const register = () => {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
+  const { theme, setTheme } = useTheme();
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post(
-        "http://192.168.0.101:3001/auth/register",
-        {
-          name: name,
-          email: email,
-          password: password,
-        }
-      );
+      const response = await axios.post("http://10.0.2.2:3001/auth/register", {
+        name: name,
+        email: email,
+        password: password,
+      });
       if (response.status === 201) {
         alert("bạn đã đăng ký tài khoản thành công");
         router.push("/(tabs)/profile");
       }
     } catch (err) {
-      console.error("❌ Lỗi khi đăng nhập:", err);
+      console.error("❌ Lỗi khi đăng ký:", err);
+      console.log(name,email, password)
     }
   };
   return (
-    <View className="flex-1 w-full bg-primary ">
-      <View className="w-full flex-1 bg-primary rounded-xl p-6 shadow-lg px-5">
+    <View
+      className={`flex-1 w-full ${theme === "dark" ? "bg-primary" : "bg-white"} h-full`}
+    >
+      <View className="w-full flex-1 rounded-xl p-6 shadow-lg px-5">
         {/* Close icon góc phải */}
         <TouchableOpacity
           onPress={() => router.back()}
           className="absolute top-4 right-4"
         >
-          <Text className="text-white text-xl">✕</Text>
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"} text-xl`}
+          >
+            ✕
+          </Text>
         </TouchableOpacity>
         <View className="items-center">
-          <Text className="text-white text-3xl font-semibold mb-6 mt-10 ">
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"} text-3xl font-semibold mb-6 mt-10 `}
+          >
             Đăng ký tài khoản
           </Text>
         </View>
 
         <View className="mb-4">
           <InputComponent
+            title="Email"
             error=""
             text={email}
             setText={setEmail}
@@ -57,6 +66,7 @@ const register = () => {
 
         <View className="mb-4">
           <InputComponent
+            title="Tên"
             error=""
             text={name}
             setText={setName}
@@ -67,6 +77,7 @@ const register = () => {
         {/* Password input */}
         <View className="mb-6">
           <InputPasswordComponent
+            rePassword={false}
             placeholder="Mật khẩu"
             password={password}
             setPassword={setPassword}
@@ -75,6 +86,7 @@ const register = () => {
 
         <View className="mb-6">
           <InputPasswordComponent
+            rePassword
             placeholder="Nhập lại mật khẩu"
             password={rePassword}
             setPassword={setRePassword}
@@ -82,7 +94,7 @@ const register = () => {
         </View>
 
         {/* Login button */}
-        <View className=" mb-4">
+        <View className=" mb-4 mt-20">
           <ButtonComponent
             onPress={() => {
               handleRegister();

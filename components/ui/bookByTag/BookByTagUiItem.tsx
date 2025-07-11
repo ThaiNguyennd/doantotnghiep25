@@ -14,7 +14,7 @@ const BookByTagUiItem = ({ TagId }: any) => {
   const fetchBooks = async () => {
     try {
       const res = await axios.get(
-        `http://192.168.0.101:3001/books/by-tags/${TagId}`
+        `http://10.0.2.2:3001/books/by-tags/${TagId}`
       );
       const data = res.data;
       const booksFromAPI = data.data;

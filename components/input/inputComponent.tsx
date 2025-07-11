@@ -1,3 +1,4 @@
+import { useTheme } from "@/components/hooks/ThemeContext";
 import React from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
 
@@ -6,21 +7,29 @@ const InputComponent = ({
   setText,
   placeholder,
   error,
+  title
 }: {
-  text: string;
+  text: any;
   setText: any;
   placeholder: string;
   error: string;
+  title: string
 }) => {
+  const { theme, setTheme } = useTheme();
+
   return (
-    <View className="">
-      <Text className="text-gray-300  text-2xl mb-5">Email</Text>
+    <View className="w-full">
+      <Text
+        className={` ${theme === "light" ? "text-black" : "text-white"}  text-xl mb-5`}
+      >
+        {title}
+      </Text>
       <View
         className=" p-3 rounded-md"
         style={{ padding: 5, borderColor: "#e5e7eb", borderWidth: 1 }}
       >
         <TextInput
-          className=" text-white  py-3 rounded"
+          className={` ${theme === "light" ? "text-black" : "text-white"}  py-3 rounded`}
           placeholder={placeholder}
           placeholderTextColor="#999"
           value={text}

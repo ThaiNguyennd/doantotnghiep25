@@ -1,3 +1,4 @@
+import { useTheme } from "@/components/hooks/ThemeContext";
 import { useUser } from "@/components/hooks/userContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -6,11 +7,14 @@ import { StyleSheet, Text, View } from "react-native";
 import CommentFormComponent from "./CommentFormComponent";
 import CommentItemComponent from "./CommentItemComponent";
 
+
 const CommentComponent = ({ bookId }: any) => {
   const [comments, setComments] = useState([]);
   const [isDeleted, setIsDelete] = useState(false);
   const [token, setToken] = useState<string | null>("");
   const { user } = useUser();
+    const { theme, setTheme } = useTheme();
+
   useEffect(() => {
     fetchCmt();
   }, []);
@@ -21,7 +25,7 @@ const CommentComponent = ({ bookId }: any) => {
   console.log("isDeleted", token);
   const fetchCmt = async () => {
     const result = await axios.get(
-      `http://192.168.0.101:3001/comments/book/${bookId}`
+      `http://10.0.2.2:3001/comments/book/${bookId}`
     );
     const tokena = await AsyncStorage.getItem("token");
     setToken(tokena);
@@ -38,7 +42,7 @@ const CommentComponent = ({ bookId }: any) => {
         };
         console.log("newcmt", newComment);
         await axios.post(
-          `http://192.168.0.101:3001/comments/`,
+          `http://10.0.2.2:3001/comments/`,
 
           newComment,
 
@@ -54,14 +58,14 @@ const CommentComponent = ({ bookId }: any) => {
         };
         console.log("newcmt1", newComment);
         await axios.post(
-          `http://192.168.0.101:3001/comments/`,
+          `http://10.0.2.2:3001/comments/`,
 
           newComment,
 
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const result = await axios.get(
-          `http://192.168.0.101:3001/comments/book/${bookId}`
+          `http://10.0.2.2:3001/comments/book/${bookId}`
         );
         setComments(result.data.data);
         window.alert("bạn đã thêm bình luạn thành công");
@@ -73,7 +77,7 @@ const CommentComponent = ({ bookId }: any) => {
   return (
     <View>
       <View className="w-full  p-4  shadow rounded border-gray-400 mb-10 border border-l-0 border-r-0  text-gray-200">
-        <Text className="text-xl font-bold mb-4 text-white">💬 Bình luận</Text>
+        <Text className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-white" : "text-black"}`}>💬 Bình luận</Text>
         <View className="mt-4 space-y-4 text-xl">
           {comments.map((c: any) => (
             <CommentItemComponent

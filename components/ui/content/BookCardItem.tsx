@@ -1,9 +1,13 @@
+import { useTheme } from "@/components/hooks/ThemeContext";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 
+
 const BookCardItem = ({ book, widthItem }: any) => {
+    const { theme, setTheme } = useTheme();
+
   return (
     <View>
       <TouchableOpacity
@@ -19,7 +23,7 @@ const BookCardItem = ({ book, widthItem }: any) => {
         <View className="relative w-full">
           <Image
             source={{
-              uri: `http://192.168.0.101:3001/public/img/books/${book.title
+              uri: `http://10.0.2.2:3001/public/img/books/${book.title
                 .normalize("NFD") // Bỏ dấu
                 .replace(/[\u0300-\u036f]/g, "") // Bỏ dấu tiếng Việt
                 .toLowerCase()
@@ -41,7 +45,7 @@ const BookCardItem = ({ book, widthItem }: any) => {
             </Text>
           </View>
         </View>
-        <Text className="text-sm font-bold text-white mt-2" numberOfLines={1}>
+        <Text className={`text-sm font-bold ${theme === "dark" ? "text-white" : "text-black"} mt-2`} numberOfLines={1}>
           {book.title}
         </Text>
 

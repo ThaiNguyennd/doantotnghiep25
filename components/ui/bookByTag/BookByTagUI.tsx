@@ -10,7 +10,7 @@ const BookByTagUI = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   const fetchTags = async () => {
     try {
-      const res = await axios.get("http://192.168.0.101:3001/tags");
+      const res = await axios.get("http://10.0.2.2:3001/tags");
       setTags(res.data?.data?.result);
     } catch (err) {
       console.error("Lỗi khi lấy tags:", err);

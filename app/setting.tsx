@@ -1,27 +1,23 @@
 import { useLoading } from "@/components/hooks/LoadingContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSetting } from "@/components/hooks/SettingContext";
+import { useTheme } from "@/components/hooks/ThemeContext";
 import Slider from "@react-native-community/slider";
 import { router } from "expo-router";
 import * as Speech from "expo-speech";
 import React, { useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 const backgroundColors = [
   { key: "#000", color: "#000" },
   { key: "#fff", color: "#fff" },
 ];
 const setting = () => {
-  const [fontSize, setFontSize] = useState(22);
-  const [lineHeight, setLineHeight] = useState(2.8);
+  const { font, setFont } = useSetting();
+  const [fontSize, setFontSize] = useState(font.fontSize);
+  const [lineHeight, setLineHeight] = useState(font.lineHeight);
   const [selectedColor, setSelectedColor] = useState("auto");
-  const [rate, setRate] = useState(1);
-  const [pitch, setPitch] = useState(1.0);
+  const [rate, setRate] = useState(font.rate);
+  const [pitch, setPitch] = useState(font.pitch);
   const { setLoading } = useLoading();
   const testSpeech = () => {
     Speech.stop();
@@ -31,23 +27,41 @@ const setting = () => {
       rate,
     });
   };
+  const { theme, setTheme } = useTheme();
   const ChangeSetting = async () => {
-    await AsyncStorage.setItem("fontSize", String(fontSize));
-    await AsyncStorage.setItem("lineHeight", String(lineHeight));
-    await AsyncStorage.setItem("bgr", String(selectedColor));
-    await AsyncStorage.setItem("rate", String(rate));
-    await AsyncStorage.setItem("pitch", String(pitch));
+    const setting = {
+      fontSize: fontSize, // mặc định tương đương text-base
+      lineHeight: lineHeight,
+      rate: rate,
+      pitch: pitch,
+    };
+    setFont(setting);
     router.back();
     setLoading(true);
+    if (selectedColor === "#000") {
+      setTheme(theme === "dark" ? "light" : "dark");
+    }
+    if (selectedColor === "#fff") {
+      setTheme(theme === "dark" ? "light" : "dark");
+    }
   };
-
   return (
-    <View className="flex-1 w-full bg-primary 8">
+    <View
+      className={`flex-1 w-full ${theme === "dark" ? "bg-primary" : "bg-white"} `}
+    >
       <View className="w-full flex-row items-center justify-between rounded-xl p-6 shadow-lg px-5 fixed">
         <TouchableOpacity onPress={() => router.back()} className="">
-          <Text className="text-white text-xl">✕</Text>
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"} text-xl`}
+          >
+            ✕
+          </Text>
         </TouchableOpacity>
-        <Text className="text-white text-xl">Thiết lập giao diện</Text>
+        <Text
+          className={`${theme === "dark" ? "text-white" : "text-black"} text-xl`}
+        >
+          Thiết lập giao diện
+        </Text>
         <View className="flex-row gap-5">
           <TouchableOpacity
             onPress={() => {
@@ -55,21 +69,29 @@ const setting = () => {
             }}
             className=" "
           >
-            <Text className="text-white text-xl">Lưu</Text>
+            <Text
+              className={`${theme === "dark" ? "text-white" : "text-black"} text-xl`}
+            >
+              Lưu
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
       <ScrollView>
         {/* {-- bground} */}
         <View className=" flex-row justify-between items-center px-10 mt-10">
-          <Text className="text-white mb-5 font-semibold">MÀU NỀN</Text>
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"} mb-5 font-semibold`}
+          >
+            MÀU NỀN
+          </Text>
           <View className="flex-row flex-wrap gap-2 mb-6  items-center">
             {backgroundColors.map((item) => (
               <TouchableOpacity
                 key={item.key}
                 onPress={() => setSelectedColor(item.key)}
                 className={`w-10 h-10 rounded border-2
-              ${selectedColor === item.key ? "border-red-500" : "border-white"}
+              ${selectedColor === item.key ? "border-red-500" : "border-gray-400"}
               ${item.color === "transparent" ? "bg-transparent" : ""}`}
                 style={{
                   backgroundColor:
@@ -82,28 +104,52 @@ const setting = () => {
 
         {/* {-- fontSize} */}
         <View className=" flex-row justify-between items-center px-10 mt-10">
-          <Text className="text-white font-bold mb-1">KÍCH THƯỚC CHỮ</Text>
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"} font-bold mb-1`}
+          >
+            KÍCH THƯỚC CHỮ
+          </Text>
           <View className="flex-row items-center ">
-            <Text className="text-white mr-4">{fontSize}</Text>
+            <Text
+              className={`${theme === "dark" ? "text-white" : "text-black"} mr-4`}
+            >
+              {fontSize}
+            </Text>
             <TouchableOpacity
               onPress={() => setFontSize(fontSize - 1)}
               className="px-3 py-1 bg-gray-500 rounded mr-2"
             >
-              <Text className="text-white">−</Text>
+              <Text
+                className={`${theme === "dark" ? "text-white" : "text-black"}`}
+              >
+                −
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => setFontSize(fontSize + 1)}
               className="px-3 py-1 bg-gray-500 rounded"
             >
-              <Text className="text-white">+</Text>
+              <Text
+                className={`${theme === "dark" ? "text-white" : "text-black"}`}
+              >
+                +
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
         {/* {-- lineHeight} */}
         <View className="flex-row justify-between items-center px-10 mt-10">
-          <Text className="text-white font-bold mb-1">Kích Thước</Text>
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"} font-bold mb-1`}
+          >
+            Khoảng cách dòng
+          </Text>
           <View className="flex-row items-center ">
-            <Text className="text-white mr-4">{lineHeight.toFixed(1)}</Text>
+            <Text
+              className={`${theme === "dark" ? "text-white" : "text-black"} mr-4`}
+            >
+              {lineHeight.toFixed(1)}
+            </Text>
             <TouchableOpacity
               onPress={() =>
                 setLineHeight((prev) =>
@@ -112,7 +158,11 @@ const setting = () => {
               }
               className="px-3 py-1 bg-gray-500 rounded mr-2"
             >
-              <Text className="text-white">−</Text>
+              <Text
+                className={`${theme === "dark" ? "text-white" : "text-black"}`}
+              >
+                −
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
@@ -120,18 +170,28 @@ const setting = () => {
               }
               className="px-3 py-1 bg-gray-500 rounded"
             >
-              <Text className="text-white">+</Text>
+              <Text
+                className={`${theme === "dark" ? "text-white" : "text-black"}`}
+              >
+                +
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
 
         {/* {-- lineHeight} */}
         <View className="px-3 mt-10">
-          <Text className="text-white font-bold mt-6 mb-3 text-lg">
+          <Text
+            className={`${theme === "dark" ? "text-white" : "text-black"} font-bold mt-6 mb-3 text-lg`}
+          >
             TUỲ CHỈNH GIỌNG ĐỌC
           </Text>
           <View className="flex-row justify-between items-center px-10">
-            <Text className="text-white mt-4">Tốc độ</Text>
+            <Text
+              className={`${theme === "dark" ? "text-white" : "text-black"} mt-4`}
+            >
+              Tốc độ
+            </Text>
             <Slider
               style={{ width: "100%", height: 40 }}
               value={rate}
@@ -145,7 +205,11 @@ const setting = () => {
             />
           </View>
           <View className="flex-row justify-between items-center px-10 mt-10">
-            <Text className="text-white mt-4">Cao độ</Text>
+            <Text
+              className={`${theme === "dark" ? "text-white" : "text-black"} mt-4`}
+            >
+              Cao độ
+            </Text>
             <Slider
               style={{ width: "100%", height: 40 }}
               value={pitch}
@@ -171,5 +235,3 @@ const setting = () => {
 };
 
 export default setting;
-
-const styles = StyleSheet.create({});

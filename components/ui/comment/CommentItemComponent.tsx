@@ -1,8 +1,10 @@
+import { useTheme } from "@/components/hooks/ThemeContext";
 import { useUser } from "@/components/hooks/userContext";
 import axios from "axios";
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CommentFormComponent from "./CommentFormComponent";
+
 
 const CommentItemComponent = ({
   comment,
@@ -10,24 +12,27 @@ const CommentItemComponent = ({
   setIsDelete,
   isDeleted,
 }: any) => {
+    const { theme, setTheme } = useTheme();
+
   const { user } = useUser();
   const [showReply, setShowReply] = useState(false);
   console.log("user", user?._id);
   const handleDelteComment = async (idComment: string) => {
     
-    await axios.delete(`http://192.168.0.101:3001/comments/${idComment}`, {
+    await axios.delete(`http://10.0.2.2:3001/comments/${idComment}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     });
     console.log("đã xóa")
+    alert('bạn đã xóa bình luận của bạn')
     setIsDelete(!isDeleted);
     
   };
   return (
     <View>
       <View className="border-l-2 pl-4">
-        <Text className="text-lg text-gray-300">
+        <Text className={`text-lg ${theme === "dark" ? "text-gray-300" : "text-gray-500"}`}>
           🧑 <Text>{comment.user.name}</Text>: {comment.content}
         </Text>
         <View className="flex flex-row">
@@ -35,7 +40,7 @@ const CommentItemComponent = ({
             className="text-blue-500 text-xs mt-1 mr-5"
             onPress={() => setShowReply((prev) => !prev)}
           >
-            <Text className="text-white">
+            <Text className={`${theme === "dark" ? "text-gray-300" : "text-blue-300"}`}>
               {" "}
               {showReply ? "Hủy" : "↪ Trả lời"}
             </Text>

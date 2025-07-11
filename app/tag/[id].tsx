@@ -1,22 +1,17 @@
+import { useTheme } from "@/components/hooks/ThemeContext";
 import BookCardItem from "@/components/ui/content/BookCardItem";
 import { Book } from "@/types/book";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import {
-  Dimensions,
-  FlatList,
-
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Dimensions, FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const Details = () => {
   const { id, name } = useLocalSearchParams();
   const { width: screenWidth } = Dimensions.get("window");
+  const { theme, setTheme } = useTheme();
 
   const [books, setBooks] = useState<Book[]>([]);
   useEffect(() => {
@@ -25,7 +20,7 @@ const Details = () => {
   const fetchBooks = async () => {
     try {
       const res = await axios.get(
-        `http://192.168.0.101:3001/books/by-tags/${id}`
+        `http://10.0.2.2:3001/books/by-tags/${id}`
       );
       const data = res.data;
       const booksFromAPI = data.data;
@@ -51,22 +46,32 @@ const Details = () => {
     }
   };
   return (
-    <SafeAreaView className="bg-primary flex-1">
+    <SafeAreaView
+      className={`flex-1 w-full ${theme === "dark" ? "bg-primary" : "bg-white"} h-full`}
+    >
       <View className="flex-row items-center justify-between mb-4 px-4">
         <Ionicons
           name="arrow-back"
           size={24}
-          color="white"
+          color={theme === "dark" ? "white" : "black"}
           onPress={() => router.back()}
         />
-        <Text className="text-white text-lg font-semibold">{name}</Text>
-        <Ionicons name="search" size={24} color="white" />
+        <Text
+          className={`${theme === "dark" ? "text-white" : "text-black"} text-lg font-semibold`}
+        >
+          {name}
+        </Text>
+        <Ionicons
+          name="search"
+          size={24}
+          color={theme === "dark" ? "white" : "black"}
+        />
       </View>
       <FlatList
         style={{ width: screenWidth }}
         data={books}
         contentContainerStyle={{ paddingVertical: 10 }}
-         columnWrapperStyle={{ marginBottom: 30 }} 
+        columnWrapperStyle={{ marginBottom: 30 }}
         numColumns={2}
         renderItem={({ item }) => (
           <View className="mt-10">

@@ -1,7 +1,6 @@
 import { useUser } from "@/components/hooks/userContext";
 import ProfileComponent from "@/components/profile/ProfileComponent";
 import { router } from "expo-router";
-import { useState } from "react";
 import {
   ImageBackground,
   StyleSheet,
@@ -12,10 +11,7 @@ import {
 
 export default function TabTwoScreen() {
   const { user } = useUser();
-  console.log("user", user?._id);
-  const [a, seta] = useState<string>("");
 
-  console.log(user, "a");
   return (
     <View className="flex-1 bg-primary">
       {/* Ảnh nền sách mờ */}

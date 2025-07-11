@@ -13,7 +13,7 @@ const ContentUI = () => {
   }, []);
   const fetchBooks = async () => {
     try {
-      const res = await axios.get(`http://192.168.0.101:3001/books`);
+      const res = await axios.get(`http://10.0.2.2:3001/books`);
       const data = res.data;
       const booksFromAPI = data.data.result;
 
